@@ -72,7 +72,15 @@ def division_by_zero_error():
     """Division by zero error with detailed logging"""
     try:
         logger.info("Attempting division calculation for testing")
-        numerator = request.json.get('numerator', 100) if request.json else 100
+        numerator = 100  # Default value
+        
+        # Try to get numerator from JSON if available, but don't fail if no JSON
+        try:
+            if request.is_json and request.get_json(silent=True):
+                numerator = request.get_json().get('numerator', 100)
+        except:
+            pass  # Use default if JSON parsing fails
+            
         denominator = 0  # Always zero to trigger error
         
         logger.info(f"Calculation: {numerator} / {denominator}")
@@ -163,4 +171,5 @@ def internal_error(error):
 
 if __name__ == '__main__':
     # For local development
-    application.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 8000))
+    application.run(debug=True, host='0.0.0.0', port=port)
