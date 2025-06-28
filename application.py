@@ -30,6 +30,23 @@ def log_response_info(response):
     logger.info(f"Response: {response.status_code} for {request.method} {request.url}")
     return response
 
+@application.route('/', methods=['GET'])
+@application.route('/index', methods=['GET'])
+def index():
+    """Root endpoint that returns the service status."""
+    return jsonify({
+        'service': 'sevvy-test-server',
+        'version': '1.0.0',
+        'status': 'running',
+        'timestamp': datetime.utcnow().isoformat(),
+        'message': 'Sevvy Test Server is running'
+    }), 200
+
+@application.route('/ping', methods=['GET'])
+def ping():
+    """Simple ping endpoint to test deployments"""
+    return jsonify({'message': 'pong', 'timestamp': datetime.utcnow().isoformat()}), 200
+
 @application.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint for load balancers"""
@@ -130,18 +147,29 @@ def custom_error(error_type):
         'timestamp': datetime.utcnow().isoformat()
     }), config['code']
 
+@application.route('/test', methods=['GET'])
+def test():
+    """Test endpoint to verify deployments"""
+    return jsonify({
+        'message': 'Test endpoint working!',
+        'timestamp': datetime.utcnow().isoformat(),
+        'version': '2.0.0'
+    }), 200
+
 @application.route('/status', methods=['GET'])
 def status():
     """Detailed status endpoint"""
     return jsonify({
         'service': 'sevvy-test-server',
-        'version': '1.0.0',
+        'version': '2.0.0',
         'status': 'running',
         'timestamp': datetime.utcnow().isoformat(),
         'environment': os.environ.get('FLASK_ENV', 'production'),
         'available_endpoints': [
+            'GET /',
             'GET /health',
             'GET /status',
+            'GET /test',
             'POST /error/null-pointer',
             'POST /error/server-error',
             'POST /error/division-zero',
@@ -173,3 +201,8 @@ if __name__ == '__main__':
     # For local development
     port = int(os.environ.get('PORT', 8000))
     application.run(debug=True, host='0.0.0.0', port=port)
+
+# Log registered routes when application starts
+logger.info("Registered routes:")
+for rule in application.url_map.iter_rules():
+    logger.info(f"Route: {rule.rule} -> {rule.endpoint}")
