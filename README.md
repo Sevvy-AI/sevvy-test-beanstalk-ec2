@@ -43,7 +43,7 @@ pip install -r requirements.txt
 python application.py
 ```
 
-The server will run on `http://localhost:5000`
+The server will run on `http://localhost:8000`
 
 ## AWS Beanstalk Deployment
 
@@ -56,6 +56,28 @@ eb init
 eb create sevvy-test-env
 eb deploy
 ```
+
+## Updating Deployed Version
+
+To redeploy the latest version of your code to an existing Elastic Beanstalk environment:
+
+1. **Commit your changes** (if not already committed):
+```bash
+git add .
+git commit -m "Your commit message"
+```
+
+2. **Deploy the update**:
+```bash
+eb deploy
+```
+
+3. **Verify deployment**:
+```bash
+eb status
+```
+
+The deployment will automatically create a new application version, upload it to S3, and deploy it to your running EC2 instances. The process typically takes 1-2 minutes.
 
 ## CloudWatch Integration
 
