@@ -62,7 +62,7 @@ def index():
 @application.route('/ping', methods=['GET'])
 def ping():
     """Simple ping endpoint to test deployments"""
-    return jsonify({'message': 'pong', 'timestamp': datetime.utcnow().isoformat()}), 200
+    return jsonify({'message': 'pong - test', 'timestamp': datetime.utcnow().isoformat()}), 200
 
 @application.route('/health', methods=['GET'])
 def health_check():
