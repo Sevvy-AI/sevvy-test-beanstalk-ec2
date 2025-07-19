@@ -124,6 +124,7 @@ def division_by_zero_error():
     except ZeroDivisionError as e:
         logger.error(f"DIVISION_BY_ZERO_ERROR: {str(e)}")
         logger.error(f"Numerator: {numerator}, Denominator: {denominator}")
+        logger.error("Extra log line")
         logger.error(f"Stack trace: {traceback.format_exc()}")
         return jsonify({
             'error': 'division_by_zero',
